@@ -8,6 +8,7 @@ Django==3.2.25
 setuptools>=65.7.0
 django-allauth==0.63.6
 django-crispy-forms==1.14.0
+crispy-bootstrap5==0.8
 django-extensions==3.2.3
 django-phonenumber-field==7.3.0
 django-suit==2.0a1
