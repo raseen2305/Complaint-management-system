@@ -1,0 +1,6 @@
+[build.environment]
+PYTHON_VERSION = "3.11"
+
+[build]
+  command = "pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate"
+  publish = "your_static_or_build_folder"
