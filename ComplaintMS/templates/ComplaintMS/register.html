@@ -1,0 +1,365 @@
+{% extends "ComplaintMS/index.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}Register - Complaint Management System{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center align-items-center min-vh-100">
+        <div class="col-lg-6 col-md-8 col-sm-10">
+            <div class="card glass p-5">
+                <div class="text-center mb-4">
+                    <div class="mb-3">
+                        <i class="bi bi-person-plus-circle text-primary" style="font-size: 3rem;"></i>
+                    </div>
+                    <h2 class="fw-bold text-dark mb-2">Create Account</h2>
+                    <p class="text-muted">Join our complaint management system</p>
+                </div>
+
+                <!-- Messages -->
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            <i class="bi bi-info-circle me-2"></i>
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <!-- Registration Form -->
+                <form method="POST" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    
+                    <!-- User Information -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.username.id_for_label }}" class="form-label">
+                                <i class="bi bi-person me-2"></i>Username
+                            </label>
+                            {{ form.username }}
+                            {% if form.username.errors %}
+                                <div class="text-danger small mt-1">
+                                    <i class="bi bi-exclamation-triangle me-1"></i>
+                                    {{ form.username.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">
+                                <i class="bi bi-envelope me-2"></i>Email
+                            </label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                                <div class="text-danger small mt-1">
+                                    <i class="bi bi-exclamation-triangle me-1"></i>
+                                    {{ form.email.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.first_name.id_for_label }}" class="form-label">
+                                <i class="bi bi-person me-2"></i>First Name
+                            </label>
+                            {{ form.first_name }}
+                            {% if form.first_name.errors %}
+                                <div class="text-danger small mt-1">
+                                    <i class="bi bi-exclamation-triangle me-1"></i>
+                                    {{ form.first_name.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.last_name.id_for_label }}" class="form-label">
+                                <i class="bi bi-person me-2"></i>Last Name
+                            </label>
+                            {{ form.last_name }}
+                            {% if form.last_name.errors %}
+                                <div class="text-danger small mt-1">
+                                    <i class="bi bi-exclamation-triangle me-1"></i>
+                                    {{ form.last_name.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.password1.id_for_label }}" class="form-label">
+                                <i class="bi bi-lock me-2"></i>Password
+                            </label>
+                            {{ form.password1 }}
+                            {% if form.password1.errors %}
+                                <div class="text-danger small mt-1">
+                                    <i class="bi bi-exclamation-triangle me-1"></i>
+                                    {{ form.password1.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.password2.id_for_label }}" class="form-label">
+                                <i class="bi bi-lock-fill me-2"></i>Confirm Password
+                            </label>
+                            {{ form.password2 }}
+                            {% if form.password2.errors %}
+                                <div class="text-danger small mt-1">
+                                    <i class="bi bi-exclamation-triangle me-1"></i>
+                                    {{ form.password2.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Profile Information -->
+                    <hr class="my-4">
+                    <h5 class="mb-3">
+                        <i class="bi bi-building me-2"></i>Profile Information
+                    </h5>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ profile_form.collegename.id_for_label }}" class="form-label">
+                                <i class="bi bi-building me-2"></i>College Name
+                            </label>
+                            {{ profile_form.collegename }}
+                            {% if profile_form.collegename.errors %}
+                                <div class="text-danger small mt-1">
+                                    <i class="bi bi-exclamation-triangle me-1"></i>
+                                    {{ profile_form.collegename.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ profile_form.Branch.id_for_label }}" class="form-label">
+                                <i class="bi bi-book me-2"></i>Branch
+                            </label>
+                            {{ profile_form.Branch }}
+                            {% if profile_form.Branch.errors %}
+                                <div class="text-danger small mt-1">
+                                    <i class="bi bi-exclamation-triangle me-1"></i>
+                                    {{ profile_form.Branch.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ profile_form.contactnumber.id_for_label }}" class="form-label">
+                                <i class="bi bi-telephone me-2"></i>Contact Number
+                            </label>
+                            {{ profile_form.contactnumber }}
+                            {% if profile_form.contactnumber.errors %}
+                                <div class="text-danger small mt-1">
+                                    <i class="bi bi-exclamation-triangle me-1"></i>
+                                    {{ profile_form.contactnumber.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ profile_form.type_user.id_for_label }}" class="form-label">
+                                <i class="bi bi-person-badge me-2"></i>User Type
+                            </label>
+                            {{ profile_form.type_user }}
+                            {% if profile_form.type_user.errors %}
+                                <div class="text-danger small mt-1">
+                                    <i class="bi bi-exclamation-triangle me-1"></i>
+                                    {{ profile_form.type_user.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="d-grid mb-4">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-person-plus me-2"></i>Create Account
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Additional Links -->
+                <div class="text-center">
+                    <div class="border-top pt-3">
+                        <small class="text-muted">
+                            Already have an account? 
+                            <a href="{% url 'signin' %}" class="text-decoration-none fw-bold">
+                                Sign In
+                            </a>
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security Info -->
+            <div class="text-center mt-4">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-center justify-content-center">
+                            <i class="bi bi-shield-check text-success me-2"></i>
+                            <small class="text-muted">Secure Registration</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-center justify-content-center">
+                            <i class="bi bi-person-check text-info me-2"></i>
+                            <small class="text-muted">User Verification</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-center justify-content-center">
+                            <i class="bi bi-headset text-warning me-2"></i>
+                            <small class="text-muted">24/7 Support</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .glass {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .form-control, .form-select {
+        border: 2px solid var(--gray-200);
+        border-radius: var(--border-radius);
+        padding: 0.75rem 1rem;
+        transition: var(--transition);
+        background: white;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        outline: none;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        border: none;
+        transition: var(--transition);
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+        filter: brightness(1.1);
+    }
+    
+    .alert {
+        border: none;
+        border-radius: var(--border-radius);
+        padding: 1rem 1.5rem;
+        font-weight: 500;
+        box-shadow: var(--shadow);
+    }
+    
+    .alert-success {
+        background: linear-gradient(135deg, var(--success-color) 0%, #059669 100%);
+        color: white;
+    }
+    
+    .alert-danger {
+        background: linear-gradient(135deg, var(--danger-color) 0%, #dc2626 100%);
+        color: white;
+    }
+    
+    @media (max-width: 768px) {
+        .card {
+            padding: 2rem !important;
+        }
+        
+        .btn-lg {
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+        }
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add loading state to form
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', function() {
+            const submitBtn = form.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.innerHTML = '<i class="bi bi-arrow-clockwise me-2"></i>Creating Account...';
+                submitBtn.disabled = true;
+            }
+        });
+    }
+    
+    // Add focus effects to form inputs
+    const inputs = document.querySelectorAll('.form-control, .form-select');
+    inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentElement.style.transform = 'scale(1.02)';
+        });
+        
+        input.addEventListener('blur', function() {
+            this.parentElement.style.transform = 'scale(1)';
+        });
+    });
+    
+    // Auto-hide alerts
+    const alerts = document.querySelectorAll('.alert');
+    alerts.forEach(alert => {
+        setTimeout(() => {
+            alert.style.opacity = '0';
+            setTimeout(() => {
+                alert.remove();
+            }, 300);
+        }, 5000);
+    });
+    
+    // Password strength indicator
+    const passwordField = document.querySelector('#id_password1');
+    if (passwordField) {
+        const strengthIndicator = document.createElement('div');
+        strengthIndicator.className = 'mt-2';
+        strengthIndicator.innerHTML = `
+            <div class="progress" style="height: 5px;">
+                <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+            </div>
+            <small class="text-muted">Password strength</small>
+        `;
+        passwordField.parentNode.appendChild(strengthIndicator);
+        
+        passwordField.addEventListener('input', function() {
+            const password = this.value;
+            const strength = calculatePasswordStrength(password);
+            const progressBar = strengthIndicator.querySelector('.progress-bar');
+            
+            progressBar.style.width = strength.percentage + '%';
+            progressBar.className = 'progress-bar bg-' + strength.color;
+        });
+    }
+    
+    function calculatePasswordStrength(password) {
+        let score = 0;
+        if (password.length >= 8) score += 25;
+        if (/[a-z]/.test(password)) score += 25;
+        if (/[A-Z]/.test(password)) score += 25;
+        if (/[0-9]/.test(password)) score += 25;
+        
+        if (score < 50) return { percentage: score, color: 'danger' };
+        if (score < 75) return { percentage: score, color: 'warning' };
+        return { percentage: score, color: 'success' };
+    }
+});
+</script>
+{% endblock %}

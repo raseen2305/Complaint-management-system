@@ -1,0 +1,401 @@
+{% extends "ComplaintMS/index.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}Statistics - Complaint Management System{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+    <!-- Sidebar -->
+        <div class="col-lg-3 col-md-4 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-person-circle me-2"></i>
+                        Welcome, {{ user.first_name }}
+                    </h5>
+                </div>
+      <div class="list-group list-group-flush">
+                    <a href="{% url 'counter' %}" class="list-group-item list-group-item-action active">
+                        <i class="bi bi-bar-chart me-2"></i>Statistics
+                    </a>
+                    <a href="{% url 'change_password_g' %}" class="list-group-item list-group-item-action">
+                        <i class="bi bi-key me-2"></i>Change Password
+                    </a>
+                    <a href="{% url 'allcomplaints' %}" class="list-group-item list-group-item-action">
+                        <i class="bi bi-list-ul me-2"></i>All Complaints
+                    </a>
+                    <a href="{% url 'solved' %}" class="list-group-item list-group-item-action">
+                        <i class="bi bi-check-circle me-2"></i>Solved Complaints
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-lg-9 col-md-8">
+            <!-- Page Header -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4 class="mb-0">
+                        <i class="bi bi-bar-chart me-2"></i>Complaint Statistics
+                    </h4>
+                    <p class="text-muted mb-0">Comprehensive analytics and insights for complaint management</p>
+                </div>
+            </div>
+
+            <!-- Statistics Cards -->
+            <div class="row mb-4">
+                <div class="col-lg-4 col-md-6 mb-3">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center justify-content-center mb-3">
+                                <i class="bi bi-clipboard-data text-primary" style="font-size: 3rem;"></i>
+                            </div>
+                            <h3 class="card-title text-primary mb-2">{{ total }}</h3>
+                            <h6 class="card-subtitle mb-2 text-muted">Total Complaints</h6>
+                            <p class="card-text small text-muted">All complaints submitted to the system</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6 mb-3">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center justify-content-center mb-3">
+                                <i class="bi bi-exclamation-triangle text-warning" style="font-size: 3rem;"></i>
+                            </div>
+                            <h3 class="card-title text-warning mb-2">{{ unsolved }}</h3>
+                            <h6 class="card-subtitle mb-2 text-muted">Unresolved Complaints</h6>
+                            <p class="card-text small text-muted">Complaints pending resolution</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6 mb-3">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center justify-content-center mb-3">
+                                <i class="bi bi-check-circle text-success" style="font-size: 3rem;"></i>
+                            </div>
+                            <h3 class="card-title text-success mb-2">{{ solved }}</h3>
+                            <h6 class="card-subtitle mb-2 text-muted">Resolved Complaints</h6>
+                            <p class="card-text small text-muted">Successfully resolved issues</p>
+                        </div>
+                    </div>
+                </div>
+      </div>
+
+            <!-- Resolution Rate Card -->
+            <div class="row mb-4">
+ <div class="col-12">
+		    <div class="card">
+		        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <h5 class="card-title mb-2">
+                                        <i class="bi bi-graph-up me-2"></i>Resolution Rate
+                                    </h5>
+                                    <p class="text-muted mb-3">Percentage of complaints successfully resolved</p>
+                                    <div class="progress mb-3" style="height: 20px;">
+                                        {% if total > 0 %}
+                                            <div class="progress-bar bg-success" role="progressbar" 
+                                                 style="width: {% widthratio solved total 100 %}%">
+                                                {% widthratio solved total 100 %}%
+                                            </div>
+                                        {% else %}
+                                            <div class="progress-bar bg-secondary" role="progressbar" style="width: 0%">
+                                                0%
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-center">
+                                    {% if total > 0 %}
+                                        <h2 class="text-success mb-0">{% widthratio solved total 100 %}%</h2>
+                                    {% else %}
+                                        <h2 class="text-secondary mb-0">0%</h2>
+                                    {% endif %}
+                                    <small class="text-muted">Success Rate</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+		            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="bi bi-pie-chart me-2"></i>Complaint Analysis by Type
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="complaintsChart" style="height: 400px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Statistics Table -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="bi bi-table me-2"></i>Detailed Breakdown by Complaint Type
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Complaint Type</th>
+                                            <th class="text-center">Total</th>
+                                            <th class="text-center">Resolved</th>
+                                            <th class="text-center">In Progress</th>
+                                            <th class="text-center">Pending</th>
+                                            <th class="text-center">Resolution Rate</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for entry in dataset %}
+                                        <tr>
+                                            <td>
+                                                <span class="badge bg-info">{{ entry.Type_of_complaint }}</span>
+                                            </td>
+                                            <td class="text-center">
+                                                <strong>{{ entry.total }}</strong>
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="badge bg-success">{{ entry.solved }}</span>
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="badge bg-warning">{{ entry.inprogress }}</span>
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="badge bg-danger">{{ entry.notsolved }}</span>
+                                            </td>
+                                            <td class="text-center">
+                                                {% if entry.total > 0 %}
+                                                    <div class="progress" style="height: 20px; width: 100px; margin: 0 auto;">
+                                                        <div class="progress-bar bg-success" role="progressbar" 
+                                                             style="width: {% widthratio entry.solved entry.total 100 %}%">
+                                                            {% widthratio entry.solved entry.total 100 %}%
+                                                        </div>
+                                                    </div>
+                                                {% else %}
+                                                    <span class="text-muted">N/A</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+		                </div>
+						
+<style>
+    .list-group-item {
+        border: none;
+        border-radius: var(--border-radius);
+        margin-bottom: 0.25rem;
+        transition: var(--transition);
+    }
+    
+    .list-group-item:hover {
+        background-color: var(--gray-100);
+        transform: translateX(5px);
+    }
+    
+    .list-group-item.active {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        border: none;
+    }
+    
+    .card {
+        transition: var(--transition);
+    }
+    
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+    }
+    
+    .progress {
+        border-radius: var(--border-radius);
+    }
+    
+    .progress-bar {
+        border-radius: var(--border-radius);
+    }
+    
+    .table th {
+        border-top: none;
+        font-weight: 600;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .table td {
+        vertical-align: middle;
+        border-top: 1px solid var(--gray-200);
+    }
+    
+    .badge {
+        font-size: 0.75rem;
+        padding: 0.5rem 0.75rem;
+    }
+    
+    @media (max-width: 768px) {
+        .table-responsive {
+            font-size: 0.875rem;
+        }
+        
+        .progress {
+            height: 15px !important;
+        }
+    }
+</style>
+
+<!-- Highcharts -->
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+
+  <script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Highcharts
+    Highcharts.chart('complaintsChart', {
+        chart: {
+            type: 'column',
+            backgroundColor: 'transparent',
+            style: {
+                fontFamily: 'Inter, sans-serif'
+            }
+        },
+        title: {
+            text: 'Complaint Statistics by Type',
+            style: {
+                color: '#1f2937',
+                fontWeight: '600'
+            }
+        },
+        subtitle: {
+            text: 'Comprehensive breakdown of complaint statuses',
+            style: {
+                color: '#6b7280'
+            }
+        },
+        xAxis: {
+          categories: [
+            {% for entry in dataset %}'{{ entry.Type_of_complaint }}'{% if not forloop.last %}, {% endif %}{% endfor %}
+            ],
+            crosshair: true,
+            labels: {
+                style: {
+                    color: '#374151'
+                }
+            }
+        },
+          yAxis: {
+            min: 0,
+           title: {
+                text: 'Number of Complaints',
+                style: {
+                    color: '#374151'
+                }
+            },
+            labels: {
+                style: {
+                    color: '#374151'
+                }
+            }
+        },
+        tooltip: {
+            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                '<td style="padding:0"><b>{point.y}</b></td></tr>',
+            footerFormat: '</table>',
+            shared: true,
+            useHTML: true,
+            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+            borderColor: '#e5e7eb',
+            borderRadius: 8,
+            shadow: true
+        },
+        plotOptions: {
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0,
+                borderRadius: 4
+            }
+        },
+        series: [{
+          name: 'Total',
+          data: [
+            {% for entry in dataset %}{{ entry.total }}{% if not forloop.last %}, {% endif %}{% endfor %}
+          ],
+            color: '#6366f1'
+        }, {
+            name: 'Resolved',
+          data: [
+            {% for entry in dataset %}{{ entry.solved }}{% if not forloop.last %}, {% endif %}{% endfor %}
+          ],
+            color: '#10b981'
+        }, {
+            name: 'In Progress',
+            data: [
+                {% for entry in dataset %}{{ entry.inprogress }}{% if not forloop.last %}, {% endif %}{% endfor %}
+            ],
+            color: '#f59e0b'
+        }, {
+            name: 'Pending',
+          data: [
+            {% for entry in dataset %}{{ entry.notsolved }}{% if not forloop.last %}, {% endif %}{% endfor %}
+          ],
+            color: '#ef4444'
+        }],
+        legend: {
+            itemStyle: {
+                color: '#374151'
+            }
+        },
+        credits: {
+            enabled: false
+        }
+    });
+    
+    // Add animation to cards
+    const cards = document.querySelectorAll('.card');
+    cards.forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.1}s`;
+        card.classList.add('fade-in');
+    });
+    
+    // Add hover effects to progress bars
+    const progressBars = document.querySelectorAll('.progress-bar');
+    progressBars.forEach(bar => {
+        bar.addEventListener('mouseenter', function() {
+            this.style.transform = 'scaleY(1.1)';
+        });
+        
+        bar.addEventListener('mouseleave', function() {
+            this.style.transform = 'scaleY(1)';
+        });
+    });
+    });
+  </script>
+{% endblock %}
